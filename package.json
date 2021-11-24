@@ -15,5 +15,8 @@
     "url": "https://github.com/lucsimao/my-basic-typescript-configuration/issues"
   },
   "homepage": "https://github.com/lucsimao/my-basic-typescript-configuration#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
 }
