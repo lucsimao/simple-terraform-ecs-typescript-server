@@ -20,7 +20,6 @@
         "varsIgnorePattern": "^_"
       }
     ],
-    "sort-imports": "error",
-    "@typescript-eslint/no-floating-promises": true
+    "sort-imports": "error"
   }
 }

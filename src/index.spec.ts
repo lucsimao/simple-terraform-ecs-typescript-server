@@ -1,7 +1,7 @@
-import * as index from "./index";
+import * as index from './index';
 
-describe("Index Test", () => {
-  it("should pass", () => {
+describe('Index Test', () => {
+  it('should pass', () => {
     expect(index).toEqual({});
   });
 });
