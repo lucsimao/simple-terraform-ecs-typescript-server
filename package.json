@@ -7,6 +7,7 @@
     "test": "jest --passWithNoTests --runInBand",
     "test:unit": "npm run test -- --watch",
     "test:coverage": "npm run test -- --coverage",
+    "test:mutation": "stryker run",
     "lint": "eslint ./src ./test --ext .ts",
     "lint:fix": "eslint ./src ./test --ext .ts --fix"
   },
@@ -22,6 +23,8 @@
   "homepage": "https://github.com/lucsimao/my-basic-typescript-configuration#readme",
   "description": "",
   "devDependencies": {
+    "@stryker-mutator/core": "^5.5.1",
+    "@stryker-mutator/jest-runner": "^5.5.1",
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
