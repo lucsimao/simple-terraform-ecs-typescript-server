@@ -3,4 +3,5 @@
 
 npm run style:check
 npm run lint
+npm run lint:deadcode
 npm run test:coverage
