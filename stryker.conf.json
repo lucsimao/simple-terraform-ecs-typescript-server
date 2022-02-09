@@ -3,14 +3,14 @@
   "packageManager": "yarn",
   "reporters": ["html", "clear-text", "progress", "dashboard"],
   "mutate": [
-    "{src,lib}/**/!(*.+(s|S)pec|*.+(t|T)est).+(cjs|mjs|js|ts|jsx|tsx|html|vue)",
-    "!src/index.ts"
+    "{src,lib}/**/!(*.+(s|S)pec|*.+(t|T)est).+(cjs|mjs|js|ts|jsx|tsx|html|vue)"
   ],
   "jest": {
     "projectType": "custom",
-    "configFile": "jest.config.ts",
+    "configFile": "jest.config.js",
     "enableFindRelatedTests": true
   },
+  "tempDirName": "stryker-tmp",
   "cleanTempDir": true,
   "testRunner": "jest",
   "coverageAnalysis": "perTest",
