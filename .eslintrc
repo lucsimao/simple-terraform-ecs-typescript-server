@@ -24,6 +24,17 @@
       }
     ],
     "sort-imports": "error",
-    "@typescript-eslint/no-floating-promises": true
+    "@typescript-eslint/no-floating-promises": 2,
+    "import-helpers/order-imports": [
+      "error",
+      {
+        "newlinesBetween": "always",
+        "groups": ["module", ["parent", "sibling", "index"]],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
+      }
+    ]
   }
 }
