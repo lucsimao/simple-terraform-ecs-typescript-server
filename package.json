@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky install",
     "start:dev": "ts-node-dev src/index.ts",
     "test": "jest --passWithNoTests --runInBand",
     "test:unit": "npm run test -- --watch",
