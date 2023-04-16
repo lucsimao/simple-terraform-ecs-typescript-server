@@ -1,11 +1,3 @@
-variable "aws_access_key_id" {
-  type = string
-}
-
-variable "aws_secret_access_key" {
-  type = string
-}
-
 variable "name" {
   type        = string
   description = "The name of project resources"
