@@ -28,7 +28,8 @@ variable "public_subnets" {
 
 variable "private_subnets" {
   description = "a list of CIDRs for private subnets in your VPC, must be set if the cidr variable is defined, needs to have as many elements as there are availability zones"
-  default     = ["10.0.144.0/20", "10.0.128.0/20"]
+  # default     = ["10.0.144.0/20", "10.0.128.0/20"]
+  default = []
 }
 
 variable "availability_zones" {
