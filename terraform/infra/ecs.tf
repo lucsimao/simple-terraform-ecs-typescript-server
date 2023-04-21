@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   container_definitions = jsonencode([
     {
       name      = "${var.name}-container-${var.environment}"
-      image     = "${var.container_image}"
+      image     = "${var.ecr_registry}/${var.ecr_repository}-${var.environment}:${var.ecr_tag}"
       essential = true
       portMappings = [
         {
@@ -38,7 +38,7 @@ resource "aws_ecs_service" "main" {
   name                = "${var.name}-service-${var.environment}"
   cluster             = aws_ecs_cluster.main.id
   task_definition     = aws_ecs_task_definition.task_definition.arn
-  desired_count       = 1
+  desired_count       = 2
   launch_type         = "FARGATE"
   scheduling_strategy = "REPLICA"
 
