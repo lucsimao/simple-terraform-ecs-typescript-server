@@ -47,4 +47,23 @@ resource "aws_ecs_service" "main" {
     assign_public_ip = true
     security_groups  = [aws_security_group.service_security_group.id]
   }
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.main.id
+    container_name   = "${var.name}-container-${var.environment}"
+    container_port   = var.container_port
+  }
+
+  depends_on = [aws_alb_listener.http, aws_ecs_task_definition.task_definition]
+}
+
+resource "aws_alb_listener" "http" {
+  load_balancer_arn = aws_lb.main.id
+  port              = tostring(var.host_port)
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.main.id
+    type             = "forward"
+  }
 }
