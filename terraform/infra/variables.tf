@@ -67,3 +67,11 @@ variable "health_check_path" {
   default = "/api/users"
 }
 
+variable "auto_scalling_memory_threshold" {
+  type    = number
+  default = 80
+}
+variable "auto_scalling_cpu_threshold" {
+  type    = number
+  default = 60
+}
