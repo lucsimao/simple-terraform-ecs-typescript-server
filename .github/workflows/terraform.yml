@@ -21,9 +21,7 @@ jobs:
         shell: bash
         working-directory: ./terraform/ecr
     env:
-      # TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      TF_VAR_container_image: ${{ vars.ECR_REPOSITORY }}:latest
+      TF_VAR_name: ${{ vars.PROJECT_NAME }}
 
     steps:
       # Checkout the repository to the GitHub Actions runner
@@ -81,13 +79,14 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push image to Amazon ECR
-        # env:
-        #   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        #   ECR_REPOSITORY: docker_nodejs_demo
-        #   IMAGE_TAG: nodejs_demo_image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.PROJECT_NAME }}-${{vars.ENVIRONMENT}}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t ${{ vars.ECR_REPOSITORY }}:latest .
-          docker push ${{ vars.ECR_REPOSITORY }}:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   terraform-ecs:
     name: 'Deploy ECS in Amazon'
@@ -101,14 +100,25 @@ jobs:
         shell: bash
         working-directory: ./terraform/infra
     env:
-      # TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      TF_VAR_container_image: ${{ vars.ECR_REPOSITORY }}:latest
+      TF_VAR_ecr_tag: ${{ github.sha }}
+      TF_VAR_ecr_repository: ${{ vars.PROJECT_NAME }}
+      TF_VAR_name: ${{ vars.PROJECT_NAME }}
 
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -119,7 +129,8 @@ jobs:
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: ls && terraform init
-
+        env:
+          TF_VAR_ecr_registry: ${{ steps.login-ecr.outputs.registry }}
       # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
         run: terraform fmt -check
@@ -130,6 +141,8 @@ jobs:
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan -input=false
+        env:
+          TF_VAR_ecr_registry: ${{ steps.login-ecr.outputs.registry }}
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -139,3 +152,5 @@ jobs:
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_ecr_registry: ${{ steps.login-ecr.outputs.registry }}
